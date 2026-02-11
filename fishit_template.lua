@@ -1,4 +1,41 @@
---// GUI Title di atas sidebar
+-- Anti double execute
+if game.CoreGui:FindFirstChild("NextHubGui") then
+    game.CoreGui.NextHubGui:Destroy()
+end
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "NextHubGui"
+screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false
+
+-- Main Frame
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 600, 0, 350)
+main.Position = UDim2.new(0.5, -300, 0.5, -175)
+main.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+main.BackgroundTransparency = 0.1
+main.Parent = screenGui
+main.Active = true
+main.Draggable = true
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+
+-- UI Stroke
+local stroke = Instance.new("UIStroke", main)
+stroke.Color = Color3.fromRGB(0, 255, 200)
+stroke.Thickness = 1.5
+
+-- Sidebar
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0, 160, 1, 0)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
+sidebar.Parent = main
+Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 12)
+
+-- GUI Title
 local guiTitle = Instance.new("TextLabel")
 guiTitle.Size = UDim2.new(1, 0, 0, 40)
 guiTitle.Position = UDim2.new(0, 0, 0, 0)
@@ -10,79 +47,12 @@ guiTitle.TextColor3 = Color3.fromRGB(0, 255, 200)
 guiTitle.TextXAlignment = Enum.TextXAlignment.Center
 guiTitle.Parent = sidebar
 
---// Create ScreenGui
-local player = game.Players.LocalPlayer
-
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "NextHub"
-screenGui.Parent = player:WaitForChild("PlayerGui")
-
---// Main Frame
-local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 600, 0, 350)
-main.Position = UDim2.new(0.5, -300, 0.5, -175)
-main.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
-main.BackgroundTransparency = 0.1
-main.Parent = screenGui
-
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
-
-local stroke = Instance.new("UIStroke", main)
-stroke.Color = Color3.fromRGB(0, 255, 200)
-stroke.Thickness = 1.5
---// Minimize Button
-local minimizeBtn = Instance.new("TextButton")
-minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
-minimizeBtn.Position = UDim2.new(1, -35, 0, 5)
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-minimizeBtn.Text = "—"
-minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-minimizeBtn.Font = Enum.Font.GothamBold
-minimizeBtn.TextSize = 20
-minimizeBtn.BorderSizePixel = 0
-minimizeBtn.Parent = main
-Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
-
---// Floating logo for minimized state
-local miniLogo = Instance.new("TextButton")
-miniLogo.Size = UDim2.new(0, 50, 0, 50)
-miniLogo.Position = UDim2.new(0.05, 0, 0.5, 0)
-miniLogo.BackgroundColor3 = Color3.fromRGB(25, 30, 40)
-miniLogo.Text = "NX"  -- singkatan Next|Hub
-miniLogo.TextColor3 = Color3.fromRGB(255,255,255)
-miniLogo.Font = Enum.Font.GothamBold
-miniLogo.TextSize = 22
-miniLogo.Visible = false
-miniLogo.Active = true
-miniLogo.Draggable = true
-miniLogo.Parent = screenGui
-Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1,0)
-
---// Minimize logic
-minimizeBtn.MouseButton1Click:Connect(function()
-    main.Visible = false
-    miniLogo.Visible = true
-end)
-
-miniLogo.MouseButton1Click:Connect(function()
-    main.Visible = true
-    miniLogo.Visible = false
-end)
-
---// Sidebar
-local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 160, 1, 0)
-sidebar.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
-sidebar.Parent = main
-
-Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 12)
-
+-- Sidebar Tabs
 local tabs = {"Info","Fishing","Automatically","Trading","Menu","Quest","Teleport"}
-
 for i, name in ipairs(tabs) do
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(1, -10, 0, 35)
-	btn.Position = UDim2.new(0, 5, 0, 10 + ((i-1) * 40))
+	btn.Position = UDim2.new(0, 5, 0, 45 + ((i-1) * 40))
 	btn.BackgroundTransparency = 1
 	btn.Text = name
 	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -100,14 +70,14 @@ for i, name in ipairs(tabs) do
 	end)
 end
 
---// Content Area
+-- Content Area
 local content = Instance.new("Frame")
 content.Size = UDim2.new(1, -170, 1, -20)
 content.Position = UDim2.new(0, 170, 0, 10)
 content.BackgroundTransparency = 1
 content.Parent = main
 
---// Title
+-- Title
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 30)
 title.Text = "Fishing"
@@ -118,7 +88,7 @@ title.BackgroundTransparency = 1
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = content
 
---// Toggle Creator
+-- Toggle Creator
 local function createToggle(text, yPos)
 	local frame = Instance.new("Frame")
 	frame.Size = UDim2.new(1, 0, 0, 50)
@@ -170,7 +140,64 @@ local function createToggle(text, yPos)
 	end)
 end
 
---// Create Toggles
+-- Create Toggles
 createToggle("Delay Complete (0.01)", 50)
 createToggle("Stable Result", 110)
 createToggle("Instant Fishing", 170)
+
+-- Minimize Button
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -35, 0, 5)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+minimizeBtn.Text = "—"
+minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextSize = 20
+minimizeBtn.BorderSizePixel = 0
+minimizeBtn.Parent = main
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
+
+-- Close Button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -70, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(170,60,60)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 18
+closeBtn.BorderSizePixel = 0
+closeBtn.Parent = main
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+
+-- Floating Logo
+local miniLogo = Instance.new("TextButton")
+miniLogo.Size = UDim2.new(0, 50, 0, 50)
+miniLogo.Position = UDim2.new(0.05, 0, 0.5, 0)
+miniLogo.BackgroundColor3 = Color3.fromRGB(25,30,40)
+miniLogo.Text = "NX"
+miniLogo.TextColor3 = Color3.fromRGB(255,255,255)
+miniLogo.Font = Enum.Font.GothamBold
+miniLogo.TextSize = 22
+miniLogo.Visible = false
+miniLogo.Active = true
+miniLogo.Draggable = true
+miniLogo.Parent = screenGui
+Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1,0)
+
+-- Minimize Logic
+minimizeBtn.MouseButton1Click:Connect(function()
+	main.Visible = false
+	miniLogo.Visible = true
+end)
+
+miniLogo.MouseButton1Click:Connect(function()
+	main.Visible = true
+	miniLogo.Visible = false
+end)
+
+-- Close Logic
+closeBtn.MouseButton1Click:Connect(function()
+	screenGui:Destroy()
+end)
