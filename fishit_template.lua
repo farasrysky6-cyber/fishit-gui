@@ -80,6 +80,22 @@ Container.Position = UDim2.new(0, 0, 0, 50)
 Container.Size = UDim2.new(1, 0, 1, -50)
 Container.BackgroundTransparency = 1
 
+-- Minimized Logo Button
+local MiniLogo = Instance.new("TextButton")
+MiniLogo.Parent = ScreenGui
+MiniLogo.Size = UDim2.new(0, 55, 0, 55)
+MiniLogo.Position = UDim2.new(0.05, 0, 0.5, 0)
+MiniLogo.Text = "🎣"
+MiniLogo.Font = Enum.Font.GothamBold
+MiniLogo.TextSize = 26
+MiniLogo.TextColor3 = Color3.fromRGB(255,255,255)
+MiniLogo.BackgroundColor3 = Color3.fromRGB(25, 35, 45)
+MiniLogo.BorderSizePixel = 0
+MiniLogo.Visible = false
+MiniLogo.Active = true
+MiniLogo.Draggable = true
+Instance.new("UICorner", MiniLogo).CornerRadius = UDim.new(1, 0)
+
 -- Template Button Function
 local function CreateButton(text, yPos)
     local btn = Instance.new("TextButton")
@@ -126,4 +142,14 @@ pcall(function()
         Text = "GUI Template Loaded",
         Duration = 3
     })
+end)
+-- Minimize Logic
+Minimize.MouseButton1Click:Connect(function()
+    Main.Visible = false
+    MiniLogo.Visible = true
+end)
+
+MiniLogo.MouseButton1Click:Connect(function()
+    Main.Visible = true
+    MiniLogo.Visible = false
 end)
