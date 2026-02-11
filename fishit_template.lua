@@ -5,6 +5,7 @@ end
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
 
 -- ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -89,13 +90,12 @@ title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = content
 
 -- Toggle Creator
-local function createToggle(text, yPos)
+local function createToggle(text, yPos, callback)
 	local frame = Instance.new("Frame")
 	frame.Size = UDim2.new(1, 0, 0, 50)
 	frame.Position = UDim2.new(0, 0, 0, yPos)
 	frame.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
 	frame.Parent = content
-	
 	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
 	
 	local label = Instance.new("TextLabel")
@@ -114,7 +114,6 @@ local function createToggle(text, yPos)
 	toggle.BackgroundColor3 = Color3.fromRGB(60,60,60)
 	toggle.Text = ""
 	toggle.Parent = frame
-	
 	Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
 	
 	local circle = Instance.new("Frame")
@@ -122,7 +121,6 @@ local function createToggle(text, yPos)
 	circle.Position = UDim2.new(0, 3, 0.5, -10)
 	circle.BackgroundColor3 = Color3.fromRGB(200,200,200)
 	circle.Parent = toggle
-	
 	Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
 	
 	local enabled = false
@@ -137,13 +135,41 @@ local function createToggle(text, yPos)
 			toggle.BackgroundColor3 = Color3.fromRGB(60,60,60)
 			circle.Position = UDim2.new(0, 3, 0.5, -10)
 		end
+		
+		if callback then
+			callback(enabled)
+		end
 	end)
 end
+
+-- Flags
+local instantFishingEnabled = false
 
 -- Create Toggles
 createToggle("Delay Complete (0.01)", 50)
 createToggle("Stable Result", 110)
-createToggle("Instant Fishing", 170)
+
+-- Instant Fishing Toggle (Macro Style)
+createToggle("Instant Fishing", 170, function(enabled)
+	instantFishingEnabled = enabled
+	
+	if enabled then
+		task.spawn(function()
+			while instantFishingEnabled do
+				pcall(function()
+					-- ===============================
+					-- Simulate click macro style
+					UserInputService.InputBegan:Fire(Enum.KeyCode.LeftMouse, false)
+					task.wait(1.8) -- hook wait
+					UserInputService.InputBegan:Fire(Enum.KeyCode.LeftMouse, false)
+					task.wait(1.2) -- delay sebelum ulang
+					print("🎣 Auto Fishing...")
+					-- ===============================
+				end)
+			end
+		end)
+	end
+end)
 
 -- Minimize Button
 local minimizeBtn = Instance.new("TextButton")
