@@ -1,8 +1,20 @@
+--// GUI Title di atas sidebar
+local guiTitle = Instance.new("TextLabel")
+guiTitle.Size = UDim2.new(1, 0, 0, 40)
+guiTitle.Position = UDim2.new(0, 0, 0, 0)
+guiTitle.BackgroundTransparency = 1
+guiTitle.Text = "Next|Hub"
+guiTitle.Font = Enum.Font.GothamBold
+guiTitle.TextSize = 20
+guiTitle.TextColor3 = Color3.fromRGB(0, 255, 200)
+guiTitle.TextXAlignment = Enum.TextXAlignment.Center
+guiTitle.Parent = sidebar
+
 --// Create ScreenGui
 local player = game.Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "ChloeXGui"
+screenGui.Name = "NextHub"
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 --// Main Frame
@@ -18,6 +30,44 @@ Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 local stroke = Instance.new("UIStroke", main)
 stroke.Color = Color3.fromRGB(0, 255, 200)
 stroke.Thickness = 1.5
+--// Minimize Button
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -35, 0, 5)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+minimizeBtn.Text = "—"
+minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextSize = 20
+minimizeBtn.BorderSizePixel = 0
+minimizeBtn.Parent = main
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
+
+--// Floating logo for minimized state
+local miniLogo = Instance.new("TextButton")
+miniLogo.Size = UDim2.new(0, 50, 0, 50)
+miniLogo.Position = UDim2.new(0.05, 0, 0.5, 0)
+miniLogo.BackgroundColor3 = Color3.fromRGB(25, 30, 40)
+miniLogo.Text = "NX"  -- singkatan Next|Hub
+miniLogo.TextColor3 = Color3.fromRGB(255,255,255)
+miniLogo.Font = Enum.Font.GothamBold
+miniLogo.TextSize = 22
+miniLogo.Visible = false
+miniLogo.Active = true
+miniLogo.Draggable = true
+miniLogo.Parent = screenGui
+Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1,0)
+
+--// Minimize logic
+minimizeBtn.MouseButton1Click:Connect(function()
+    main.Visible = false
+    miniLogo.Visible = true
+end)
+
+miniLogo.MouseButton1Click:Connect(function()
+    main.Visible = true
+    miniLogo.Visible = false
+end)
 
 --// Sidebar
 local sidebar = Instance.new("Frame")
