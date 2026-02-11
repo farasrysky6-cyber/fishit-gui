@@ -15,8 +15,8 @@ screenGui.ResetOnSpawn = false
 
 -- Main Frame
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 600, 0, 350)
-main.Position = UDim2.new(0.5, -300, 0.5, -175)
+main.Size = UDim2.new(0, 600, 0, 400)
+main.Position = UDim2.new(0.5, -300, 0.5, -200)
 main.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
 main.BackgroundTransparency = 0.1
 main.Parent = screenGui
@@ -144,32 +144,82 @@ end
 
 -- Flags
 local instantFishingEnabled = false
+local fishingDelay = 1.8 -- default delay
+
+-- Function to parse TextBox input
+local function parseDelay(input)
+    local n = tonumber(input)
+    if n and n > 0 then
+        fishingDelay = n
+    else
+        fishingDelay = 1.8
+    end
+end
 
 -- Create Toggles
 createToggle("Delay Complete (0.01)", 50)
 createToggle("Stable Result", 110)
 
--- Instant Fishing Toggle (Macro Style)
+-- Instant Fishing Toggle
 createToggle("Instant Fishing", 170, function(enabled)
-	instantFishingEnabled = enabled
-	
-	if enabled then
-		task.spawn(function()
-			while instantFishingEnabled do
-				pcall(function()
-					-- ===============================
-					-- Simulate click macro style
-					UserInputService.InputBegan:Fire(Enum.KeyCode.LeftMouse, false)
-					task.wait(1.8) -- hook wait
-					UserInputService.InputBegan:Fire(Enum.KeyCode.LeftMouse, false)
-					task.wait(1.2) -- delay sebelum ulang
-					print("🎣 Auto Fishing...")
-					-- ===============================
-				end)
-			end
-		end)
-	end
+    instantFishingEnabled = enabled
+    if enabled then
+        task.spawn(function()
+            task.wait(0.5)
+            while instantFishingEnabled do
+                pcall(function()
+                    UserInputService.InputBegan:Fire(Enum.KeyCode.LeftMouse,false)
+                    task.wait(fishingDelay)
+                    UserInputService.InputBegan:Fire(Enum.KeyCode.LeftMouse,false)
+                end)
+                task.wait(0.05)
+            end
+        end)
+    end
 end)
+
+-- Fishing Delay Input Box
+local function createDelayInput(labelText, yPos)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1,0,0,50)
+    frame.Position = UDim2.new(0,0,0,yPos)
+    frame.BackgroundColor3 = Color3.fromRGB(30,35,45)
+    frame.Parent = content
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0,8)
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0.5,0,1,0)
+    label.Text = labelText
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 14
+    label.TextColor3 = Color3.fromRGB(220,220,220)
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = frame
+
+    local input = Instance.new("TextBox")
+    input.Size = UDim2.new(0.45,0,0.7,0)
+    input.Position = UDim2.new(0.5,0,0.15,0)
+    input.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    input.TextColor3 = Color3.fromRGB(255,255,255)
+    input.Font = Enum.Font.Gotham
+    input.TextSize = 14
+    input.PlaceholderText = tostring(fishingDelay)
+    input.ClearTextOnFocus = false
+    input.Text = tostring(fishingDelay)
+    input.Parent = frame
+    Instance.new("UICorner", input).CornerRadius = UDim.new(0,6)
+
+    input.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            parseDelay(input.Text)
+            input.Text = tostring(fishingDelay)
+        end
+    end)
+end
+
+-- Add input box below toggle
+createDelayInput("Fishing Delay (detik)", 230)
 
 -- Minimize Button
 local minimizeBtn = Instance.new("TextButton")
