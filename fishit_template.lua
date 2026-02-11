@@ -1,145 +1,126 @@
---[[
-    Fish It - Modern GUI
-    Minimize + Close Script
-    Ready for loadstring
-]]
+--// Create ScreenGui
+local player = game.Players.LocalPlayer
 
--- Anti double execute
-if game.CoreGui:FindFirstChild("FishItModernGUI") then
-    game.CoreGui.FishItModernGUI:Destroy()
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ChloeXGui"
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+--// Main Frame
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 600, 0, 350)
+main.Position = UDim2.new(0.5, -300, 0.5, -175)
+main.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+main.BackgroundTransparency = 0.1
+main.Parent = screenGui
+
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+
+local stroke = Instance.new("UIStroke", main)
+stroke.Color = Color3.fromRGB(0, 255, 200)
+stroke.Thickness = 1.5
+
+--// Sidebar
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0, 160, 1, 0)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
+sidebar.Parent = main
+
+Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 12)
+
+local tabs = {"Info","Fishing","Automatically","Trading","Menu","Quest","Teleport"}
+
+for i, name in ipairs(tabs) do
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -10, 0, 35)
+	btn.Position = UDim2.new(0, 5, 0, 10 + ((i-1) * 40))
+	btn.BackgroundTransparency = 1
+	btn.Text = name
+	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	btn.TextXAlignment = Enum.TextXAlignment.Left
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 14
+	btn.Parent = sidebar
+	
+	btn.MouseEnter:Connect(function()
+		btn.TextColor3 = Color3.fromRGB(0,255,200)
+	end)
+	
+	btn.MouseLeave:Connect(function()
+		btn.TextColor3 = Color3.fromRGB(200,200,200)
+	end)
 end
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+--// Content Area
+local content = Instance.new("Frame")
+content.Size = UDim2.new(1, -170, 1, -20)
+content.Position = UDim2.new(0, 170, 0, 10)
+content.BackgroundTransparency = 1
+content.Parent = main
 
--- ScreenGui
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "FishItModernGUI"
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ResetOnSpawn = false
+--// Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Text = "Fishing"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.BackgroundTransparency = 1
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = content
 
--- Main Frame
-local Main = Instance.new("Frame")
-Main.Parent = ScreenGui
-Main.Size = UDim2.new(0, 360, 0, 260)
-Main.Position = UDim2.new(0.35, 0, 0.3, 0)
-Main.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 16)
-
--- Top Bar
-local Top = Instance.new("Frame", Main)
-Top.Size = UDim2.new(1, 0, 0, 50)
-Top.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-Top.BorderSizePixel = 0
-Instance.new("UICorner", Top).CornerRadius = UDim.new(0, 16)
-
-local Fix = Instance.new("Frame", Top)
-Fix.Size = UDim2.new(1, 0, 0.5, 0)
-Fix.Position = UDim2.new(0, 0, 0.5, 0)
-Fix.BackgroundColor3 = Top.BackgroundColor3
-Fix.BorderSizePixel = 0
-
--- Title
-local Title = Instance.new("TextLabel", Top)
-Title.Size = UDim2.new(1, -120, 1, 0)
-Title.Position = UDim2.new(0, 15, 0, 0)
-Title.BackgroundTransparency = 1
-Title.Text = "🎣 Fish It Hub"
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 22
-Title.TextColor3 = Color3.fromRGB(235, 240, 255)
-Title.TextXAlignment = Enum.TextXAlignment.Left
-
--- Minimize Button
-local Minimize = Instance.new("TextButton", Top)
-Minimize.Size = UDim2.new(0, 36, 0, 36)
-Minimize.Position = UDim2.new(1, -80, 0, 7)
-Minimize.Text = "—"
-Minimize.Font = Enum.Font.GothamBold
-Minimize.TextSize = 22
-Minimize.TextColor3 = Color3.fromRGB(255,255,255)
-Minimize.BackgroundColor3 = Color3.fromRGB(55, 65, 80)
-Minimize.BorderSizePixel = 0
-Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 10)
-
--- Close Button (Kill Script)
-local Close = Instance.new("TextButton", Top)
-Close.Size = UDim2.new(0, 36, 0, 36)
-Close.Position = UDim2.new(1, -40, 0, 7)
-Close.Text = "X"
-Close.Font = Enum.Font.GothamBold
-Close.TextSize = 18
-Close.TextColor3 = Color3.fromRGB(255,255,255)
-Close.BackgroundColor3 = Color3.fromRGB(170, 60, 60)
-Close.BorderSizePixel = 0
-Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 10)
-
--- Content
-local Content = Instance.new("Frame", Main)
-Content.Position = UDim2.new(0, 0, 0, 60)
-Content.Size = UDim2.new(1, 0, 1, -60)
-Content.BackgroundTransparency = 1
-
--- Button Template
-local function CreateButton(text, y)
-    local b = Instance.new("TextButton", Content)
-    b.Size = UDim2.new(0.85, 0, 0, 44)
-    b.Position = UDim2.new(0.075, 0, 0, y)
-    b.Text = text
-    b.Font = Enum.Font.Gotham
-    b.TextSize = 16
-    b.TextColor3 = Color3.fromRGB(255,255,255)
-    b.BackgroundColor3 = Color3.fromRGB(45, 55, 70)
-    b.BorderSizePixel = 0
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 12)
-    return b
+--// Toggle Creator
+local function createToggle(text, yPos)
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.new(1, 0, 0, 50)
+	frame.Position = UDim2.new(0, 0, 0, yPos)
+	frame.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+	frame.Parent = content
+	
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+	
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(0.7, 0, 1, 0)
+	label.Text = text
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 14
+	label.TextColor3 = Color3.fromRGB(220,220,220)
+	label.BackgroundTransparency = 1
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = frame
+	
+	local toggle = Instance.new("TextButton")
+	toggle.Size = UDim2.new(0, 50, 0, 25)
+	toggle.Position = UDim2.new(1, -60, 0.5, -12)
+	toggle.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	toggle.Text = ""
+	toggle.Parent = frame
+	
+	Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
+	
+	local circle = Instance.new("Frame")
+	circle.Size = UDim2.new(0, 20, 0, 20)
+	circle.Position = UDim2.new(0, 3, 0.5, -10)
+	circle.BackgroundColor3 = Color3.fromRGB(200,200,200)
+	circle.Parent = toggle
+	
+	Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
+	
+	local enabled = false
+	
+	toggle.MouseButton1Click:Connect(function()
+		enabled = not enabled
+		
+		if enabled then
+			toggle.BackgroundColor3 = Color3.fromRGB(0,255,200)
+			circle.Position = UDim2.new(1, -23, 0.5, -10)
+		else
+			toggle.BackgroundColor3 = Color3.fromRGB(60,60,60)
+			circle.Position = UDim2.new(0, 3, 0.5, -10)
+		end
+	end)
 end
 
--- Buttons (Template)
-local Btn1 = CreateButton("Auto Fish [SOON]", 0)
-local Btn2 = CreateButton("Auto Sell [SOON]", 0.25)
-local Btn3 = CreateButton("Teleport [SOON]", 0.5)
-
--- Floating Logo (Minimized)
-local Mini = Instance.new("TextButton")
-Mini.Parent = ScreenGui
-Mini.Size = UDim2.new(0, 58, 0, 58)
-Mini.Position = UDim2.new(0.05, 0, 0.5, 0)
-Mini.Text = "🎣"
-Mini.Font = Enum.Font.GothamBold
-Mini.TextSize = 26
-Mini.TextColor3 = Color3.fromRGB(255,255,255)
-Mini.BackgroundColor3 = Color3.fromRGB(25, 30, 40)
-Mini.BorderSizePixel = 0
-Mini.Visible = false
-Mini.Active = true
-Mini.Draggable = true
-Instance.new("UICorner", Mini).CornerRadius = UDim.new(1, 0)
-
--- Minimize Logic
-Minimize.MouseButton1Click:Connect(function()
-    Main.Visible = false
-    Mini.Visible = true
-end)
-
-Mini.MouseButton1Click:Connect(function()
-    Main.Visible = true
-    Mini.Visible = false
-end)
-
--- Close Script (Destroy All)
-Close.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
-
--- Notify
-pcall(function()
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "Fish It Hub",
-        Text = "Modern GUI Loaded",
-        Duration = 3
-    })
-end)
+--// Create Toggles
+createToggle("Delay Complete (0.01)", 50)
+createToggle("Stable Result", 110)
+createToggle("Instant Fishing", 170)
